@@ -1,180 +1,41 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<link rel="stylesheet" href="style.css">
-		<title>QR Code Reader</title>
-		<meta charset="UTF-8">
-	</head>
-	<body>
-		<table>
-			<tr>
-				<td rowspan="5" colspan="2">
-					<div style="width: 600px" id="reader"></div>
-				</td>
-				<td class="col_number">
-					<strong id="time1"></strong>
-				</td>
-				<td>
-					<strong id="name_1"></strong>
-				</td>
-			</tr>
-			<tr>
-				<td class="col_number">
-					<strong id="time2"></strong>
-				</td>
-				<td>
-					<strong id="name_2"></strong>
-				</td>
-			</tr>
-			<tr>
-				<td class="col_number">
-					<strong id="time3"></strong>
-				</td>
-				<td>
-					<strong id="name_3"></strong>
-				</td>
-			</tr>
-			<tr>
-				<td class="col_number">
-					<strong id="time4"></strong>
-				</td>
-				<td>
-					<strong id="name_4"></strong>
-				</td>
-			</tr>
-			<tr>
-				<td class="col_number">
-					<strong id="time5"></strong>
-				</td>
-				<td>
-					<strong id="name_5"></strong>
-				</td>
-			</tr>
-			<tr align="center">
-				<td style="width: 80px;"> 
-					<img width="80px" src="logo.gif">
-				</td>
-				<td>
-					<h2>ระบบเช็คการมาเรียน (beta)</h2>
-					<p>พัฒนาโดย นายจิราวัฒน์  นางาม<br>
-					ครู โรงเรียนลิ้นฟ้าพิทยาคม จังหวัดศรีสะเกษ<br>
-					แจ้งปัญหา/ข้อเสนอแนะที่เพจ <a href="https://www.facebook.com/messages/t/nacademyth">N Academy</a></p>
-				</td>
-				<td class="col_number" id="time_cell">
-					<strong id="timenow">00:00:00</strong>
-				</td>
-				<td id="result_cell">
-					<strong id="result"></strong>
-				</td>
-			</tr>
-		</table>
-		<script src="html5-qrcode.min.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		<script>
-			//var fromUID = "1FAIpQLSe_NMfH9VJ69NFWG-26ZNp12Tl2a_7EJ_3NZ5ZnLil07Y2fjw";
-			var fromUID = "1FAIpQLSf0zxS7f85g_zH-U6gBg2Cf9L3KnArWWDjBr7ypkjYoEodXRw";
-			var x = document.getElementById("myAudio"); 
-			var student_data_t = [];
-			var student_history = [];
-			var qrCodeMessage_t;
-			var audioElement;
-			$(document).ready(function(){
-			
-				$("#time_cell").click(function(){
-					audioElement.play();
-				});
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Bootstrap 101 Template</title>
 
-				audioElement = document.createElement('audio');
-					//audioElement.setAttribute('src', 'beep.wav');
-					audioElement.setAttribute('src', 'beep.mp3');
-					audioElement.setAttribute('autoplay', 'autoplay');
-					//audioElement.load()
-					$.get();
-					audioElement.addEventListener("load", function() {
-						audioElement.play();
-				}, true);
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
-				// load data
-				$.ajax({
-					url:"student20200627.csv",
-					dataType:"text",
-					success:function(data){
-						var student_data = data.split(/\r?\n|\r/);
-						console.log("Data "+(student_data.length-1) + " records has been loaded.");						
-						for(var count = 0; count<student_data.length; count++){
-							var cell_data = student_data[count].split(",");
-							student_data_t.push(cell_data);
-						}
-					}
-				});
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div style="width: 100%" id="reader"></div>
 
-				// set timeout
-				setInterval(function(){
-					$("#timenow").text(getTimeNow());
-					$("#time_cell").removeClass("bg-red");
-					$("#result_cell").removeClass("bg-red");
-					$("#time_cell").addClass("bg-green");
-					$("#result_cell").addClass("bg-green");
-					$("#result").text("กำลังสแกน...");
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+	<script src="html5-qrcode.min.js"></script>
+	<script>
+		$(document).ready(function(){
+			console.log("ready");
 
-					var req_button = document.querySelector("#reader__scan_region > img");
-					//console.log(req_button);
-					if(req_button !== null){
-						$("#time_cell").removeClass("bg-green");
-						$("#result_cell").removeClass("bg-green");
-						$("#time_cell").addClass("bg-red");
-						$("#result_cell").addClass("bg-red");
-						$("#result").text("1. กด Request Camera Permissions จากนั้นกด Start Scanning");
-					}
-				}, 1000);
-			});
-			function getTimeNow(){
-				var currentdate = new Date(); 
-				return ("0"+currentdate.getHours()).slice(-2) + ":"  
-						+ ("0"+currentdate.getMinutes()).slice(-2) + ":"  
-						+ ("0"+currentdate.getSeconds()).slice(-2);
-			}
 			function onScanSuccess(qrCodeMessage) {
-				//audioElement.play();				
-				$("#time_cell").click();
-				var student = student_data_t.find(a => a[0] === qrCodeMessage);
-				console.log(student);
-				if(typeof(student) === 'undefined'){
-					$("#result").text("ไม่พบข้อมูล");
-					$("#time_cell").removeClass("bg-green");
-					$("#result_cell").removeClass("bg-green");
-					$("#time_cell").addClass("bg-red");
-					$("#result_cell").addClass("bg-red");
-				}
-				if(qrCodeMessage !== qrCodeMessage_t){
-					qrCodeMessage_t = qrCodeMessage;
-					var strUrl = 'https://docs.google.com/forms/d/e/'+fromUID+'/formResponse?usp=pp_url&entry.1471060880='+student[0]+'&entry.1657856697='+encodeURI(student[1])+'&entry.710364960='+student[2]+'&entry.1967022086='+student[3]+'&entry.572957690='+student[4]+'&submit=Submit';
-					$("#result").text(student[1]);
-					$.ajax({
-						type: 'GET',
-						url: strUrl,
-						dataType: 'jsonp',
-						crossDomain: true,
-					})
-					.always(function() {
-						var time_scan = getTimeNow();
-						
-						if(student_history.length >= 5)
-							student_history.shift();
-						student_history.push([student, time_scan]);
-
-						$("#time1").text(student_history[0][1]); $("#name_1").text(student_history[0][0][1]);
-						$("#time2").text(student_history[1][1]); $("#name_2").text(student_history[1][0][1]);
-						$("#time3").text(student_history[2][1]); $("#name_3").text(student_history[2][0][1]);
-						$("#time4").text(student_history[3][1]); $("#name_4").text(student_history[3][0][1]);
-						$("#time5").text(student_history[4][1]); $("#name_5").text(student_history[4][0][1]);
-					});
-				}
 			}
 
 			var html5QrcodeScanner = new Html5QrcodeScanner(
 				"reader", { fps: 10, qrbox: 250 }, /* verbose= */ true);
 			html5QrcodeScanner.render(onScanSuccess);
-			</script>
-	</body>
+		});
+	</script>
+  </body>
 </html>
