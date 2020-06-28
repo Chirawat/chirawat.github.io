@@ -139,7 +139,7 @@
 			}, 1000);	
 
 			function onScanSuccess(qrCodeMessage) {
-				$("#time_cell").click();	
+				audioElement.play();
 				var student = student_data_t.find(a => a[0] === qrCodeMessage);
 				console.log(student);
 				if(typeof(student) === 'undefined'){
