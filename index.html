@@ -99,9 +99,6 @@
 		var qrCodeMessage_t;
 		var audioElement;
 		$(document).ready(function(){
-			$("#time_cell").click(function(){
-				audioElement.play();
-			});
 
 			audioElement = document.createElement('audio');
 				audioElement.setAttribute('src', 'beep.mp3');
@@ -110,6 +107,13 @@
 				audioElement.addEventListener("load", function() {
 					audioElement.play();
 			}, true);
+
+			$("#time_cell").click(function(){
+				audioElement.play();
+			});
+
+		
+			//audioElement.play();
 
 			function getTimeNow(){
 				var currentdate = new Date(); 
