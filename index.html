@@ -6,10 +6,6 @@
 		<meta charset="UTF-8">
 	</head>
 	<body>
-		<audio id="myAudio">
-			<source src="beep.mp3" type="audio/mpeg">
-			<source src="beep.wav" type="audio/wav">
-		</audio>
 		<table>
 			<tr>
 				<td rowspan="5" colspan="2">
@@ -81,7 +77,18 @@
 			var student_data_t = [];
 			var student_history = [];
 			var qrCodeMessage_t;
+			var audioElement;
 			$(document).ready(function(){
+
+			audioElement = document.createElement('audio');
+				audioElement.setAttribute('src', 'beep.mp3');
+				audioElement.setAttribute('autoplay', 'autoplay');
+				//audioElement.load()
+				$.get();
+				audioElement.addEventListener("load", function() {
+					audioElement.play();
+			}, true);
+
 				// load data
 				$.ajax({
 					url:"student20200627.csv",
@@ -123,11 +130,7 @@
 						+ ("0"+currentdate.getSeconds()).slice(-2);
 			}
 			function onScanSuccess(qrCodeMessage) {
-				// x.load();
-				// x.on('ended', function(){
-				// 	x.play();
-				// });
-				x.play();
+				audioElement.play();				
 				var student = student_data_t.find(a => a[0] === qrCodeMessage);
 				console.log(student);
 				if(typeof(student) === 'undefined'){
