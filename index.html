@@ -162,11 +162,21 @@
 							student_history.shift();
 						student_history.push([student, time_scan]);
 
-						$("#time1").text(student_history[0][1]); $("#name1").text(student_history[0][0][1]);
-						$("#time2").text(student_history[1][1]); $("#name2").text(student_history[1][0][1]);
-						$("#time3").text(student_history[2][1]); $("#name3").text(student_history[2][0][1]);
-						$("#time4").text(student_history[3][1]); $("#name4").text(student_history[3][0][1]);
-						$("#time5").text(student_history[4][1]); $("#name5").text(student_history[4][0][1]);
+						if(student_history[0] !== undefined){
+							$("#time1").text(student_history[0][1]); $("#name1").text(student_history[0][0][1]);
+						}
+						if(student_history[1] !== undefined){
+							$("#time2").text(student_history[1][1]); $("#name2").text(student_history[1][0][1]);
+						}
+						if(student_history[2] !== undefined){
+							$("#time3").text(student_history[2][1]); $("#name3").text(student_history[2][0][1]);
+						}
+						if(student_history[3] !== undefined){
+							$("#time4").text(student_history[3][1]); $("#name4").text(student_history[3][0][1]);
+						}
+						if(student_history[4] !== undefined){
+							$("#time5").text(student_history[4][1]); $("#name5").text(student_history[4][0][1]);
+						}
 					});
 				}
 			}
