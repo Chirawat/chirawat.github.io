@@ -1,0 +1,29 @@
+td{
+    vertical-align: top;
+    width: 500px;
+}
+table {
+    border-collapse: collapse;
+}
+table, th, td {
+    border: 1px solid black;
+    vertical-align: middle;
+}
+tr{
+    height: 80px;
+    vertical-align: middle;
+}
+.col_number{
+    width: 200px;
+    font-size: 24pt;
+    text-align: center;
+}
+#name_1, #name_2, #name_3, #name_4, #name_5, #result_cell{
+    font-size: 24pt;
+}
+.bg-green{
+    background-color: lightgreen;
+}
+.bg-red{
+    background-color: lightsalmon;
+}

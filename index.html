@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="style.css">
+		<title>QR Code Reader</title>
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<audio id="myAudio">
+			<source src="beep.mp3" type="audio/mpeg">
+		</audio>
+		<table>
+			<tr>
+				<td rowspan="5" colspan="2">
+					<div style="width: 600px" id="reader"></div>
+				</td>
+				<td class="col_number">
+					<strong id="time1"></strong>
+				</td>
+				<td>
+					<strong id="name_1"></strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="col_number">
+					<strong id="time2"></strong>
+				</td>
+				<td>
+					<strong id="name_2"></strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="col_number">
+					<strong id="time3"></strong>
+				</td>
+				<td>
+					<strong id="name_3"></strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="col_number">
+					<strong id="time4"></strong>
+				</td>
+				<td>
+					<strong id="name_4"></strong>
+				</td>
+			</tr>
+			<tr>
+				<td class="col_number">
+					<strong id="time5"></strong>
+				</td>
+				<td>
+					<strong id="name_5"></strong>
+				</td>
+			</tr>
+			<tr align="center">
+				<td style="width: 80px;"> 
+					<img width="80px" src="logo.gif">
+				</td>
+				<td>
+					<h2>ระบบเช็คการมาเรียน (beta)</h2>
+					<p>พัฒนาโดย นายจิราวัฒน์  นางาม<br>
+					ครู โรงเรียนลิ้นฟ้าพิทยาคม จังหวัดศรีสะเกษ<br>
+					แจ้งปัญหา/ข้อเสนอแนะที่เพจ <a href="https://www.facebook.com/messages/t/nacademyth">N Academy</a></p>
+				</td>
+				<td class="col_number" id="time_cell">
+					<strong id="timenow">00:00:00</strong>
+				</td>
+				<td id="result_cell">
+					<strong id="result"></strong>
+				</td>
+			</tr>
+		</table>
+		<script src="html5-qrcode.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script>
+			//var fromUID = "1FAIpQLSe_NMfH9VJ69NFWG-26ZNp12Tl2a_7EJ_3NZ5ZnLil07Y2fjw";
+			var fromUID = "1FAIpQLSf0zxS7f85g_zH-U6gBg2Cf9L3KnArWWDjBr7ypkjYoEodXRw";
+			var x = document.getElementById("myAudio"); 
+			var student_data_t = [];
+			var student_history = [];
+			var qrCodeMessage_t;
+			$(document).ready(function(){
+				// load data
+				$.ajax({
+					url:"student20200627.csv",
+					dataType:"text",
+					success:function(data){
+						var student_data = data.split(/\r?\n|\r/);
+						console.log("Data "+(student_data.length-1) + " records has been loaded.");						
+						for(var count = 0; count<student_data.length; count++){
+							var cell_data = student_data[count].split(",");
+							student_data_t.push(cell_data);
+						}
+					}
+				});
+
+				// set timeout
+				setInterval(function(){
+					$("#timenow").text(getTimeNow());
+					$("#time_cell").removeClass("bg-red");
+					$("#result_cell").removeClass("bg-red");
+					$("#time_cell").addClass("bg-green");
+					$("#result_cell").addClass("bg-green");
+					$("#result").text("กำลังสแกน...");
+
+					var req_button = document.querySelector("#reader__scan_region > img");
+					//console.log(req_button);
+					if(req_button !== null){
+						$("#time_cell").removeClass("bg-green");
+						$("#result_cell").removeClass("bg-green");
+						$("#time_cell").addClass("bg-red");
+						$("#result_cell").addClass("bg-red");
+						$("#result").text("1. กด Request Camera Permissions จากนั้นกด Start Scanning");
+					}
+				}, 1000);
+			});
+			function getTimeNow(){
+				var currentdate = new Date(); 
+				return ("0"+currentdate.getHours()).slice(-2) + ":"  
+						+ ("0"+currentdate.getMinutes()).slice(-2) + ":"  
+						+ ("0"+currentdate.getSeconds()).slice(-2);
+			}
+			function onScanSuccess(qrCodeMessage) {
+				x.play();
+				var student = student_data_t.find(a => a[0] === qrCodeMessage);
+				console.log(student);
+				if(typeof(student) === 'undefined'){
+					$("#result").text("ไม่พบข้อมูล");
+					$("#time_cell").removeClass("bg-green");
+					$("#result_cell").removeClass("bg-green");
+					$("#time_cell").addClass("bg-red");
+					$("#result_cell").addClass("bg-red");
+				}
+				if(qrCodeMessage !== qrCodeMessage_t){
+					qrCodeMessage_t = qrCodeMessage;
+					var strUrl = 'https://docs.google.com/forms/d/e/'+fromUID+'/formResponse?usp=pp_url&entry.1471060880='+student[0]+'&entry.1657856697='+encodeURI(student[1])+'&entry.710364960='+student[2]+'&entry.1967022086='+student[3]+'&entry.572957690='+student[4]+'&submit=Submit';
+					$("#result").text(student[1]);
+					$.ajax({
+						type: 'GET',
+						url: strUrl,
+						dataType: 'jsonp',
+						crossDomain: true,
+					})
+					.always(function() {
+						var time_scan = getTimeNow();
+						
+						if(student_history.length >= 5)
+							student_history.shift();
+						student_history.push([student, time_scan]);
+
+						$("#time1").text(student_history[0][1]); $("#name_1").text(student_history[0][0][1]);
+						$("#time2").text(student_history[1][1]); $("#name_2").text(student_history[1][0][1]);
+						$("#time3").text(student_history[2][1]); $("#name_3").text(student_history[2][0][1]);
+						$("#time4").text(student_history[3][1]); $("#name_4").text(student_history[3][0][1]);
+						$("#time5").text(student_history[4][1]); $("#name_5").text(student_history[4][0][1]);
+					});
+				}
+			}
+
+			var html5QrcodeScanner = new Html5QrcodeScanner(
+				"reader", { fps: 10, qrbox: 250 }, /* verbose= */ true);
+			html5QrcodeScanner.render(onScanSuccess);
+			</script>
+	</body>
+</html>
