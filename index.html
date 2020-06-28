@@ -8,6 +8,7 @@
 	<body>
 		<audio id="myAudio">
 			<source src="beep.mp3" type="audio/mpeg">
+			<source src="beep.wav" type="audio/wav">
 		</audio>
 		<table>
 			<tr>
@@ -122,7 +123,10 @@
 						+ ("0"+currentdate.getSeconds()).slice(-2);
 			}
 			function onScanSuccess(qrCodeMessage) {
-				x.load();
+				// x.load();
+				// x.on('ended', function(){
+				// 	x.play();
+				// });
 				x.play();
 				var student = student_data_t.find(a => a[0] === qrCodeMessage);
 				console.log(student);
