@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>QR Code Reader (beta)</title>
+
+	<!-- Bootstrap -->
+	
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+	<link rel="stylesheet" href="style.css">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+	  <!-- Columns are always 50% wide, on mobile and desktop -->
+	<div class="row">
+		<div class="col-xs-6">
+			<div style="width: 100%" id="reader"></div>
+		</div>
+		<div class="col-xs-6">
+			<table class="table table-bordered" style="height: 100vh;">
+				<tr>
+					<td class="text-center">
+						<span id="time1"></span>
+					</td>
+					<td>
+						<span id="name1"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="text-center">
+						<span id="time2"></span>
+					</td>
+					<td>
+						<span id="name2"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="text-center">
+						<span id="time3"></span>
+					</td>
+					<td>
+						<span id="name3"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="text-center">
+						<span id="time4"></span>
+					</td>
+					<td>
+						<span id="name4"></span>
+					</td>
+				</tr>
+				<tr>
+					<td class="text-center">
+						<span id="time5"></span>
+					</td>
+					<td>
+						<span id="name5"></span>
+					</td>
+				</tr>
+				<tr class="bg-success" id="result-row">
+					<td class="text-center" id="time_cell">
+						<strong id="timenow" class="align-middle">00:00:00</strong>
+					</td>
+					<td>
+						<strong id="result"></strong>
+					</td>
+				</tr>
+				<tr style="height: fit-content;" class="clearfix visible-lg">
+					<td class="text-right" style="border: white;">
+						<div class="col-lg-3" style="padding-top: 12px;"> <img src="logo.png" width="150px"></div>
+						<div class="col-lg-9">
+							<h2 style="font-size: 18px; font-weight: bold;">ระบบเช็คการมาเรียน (beta)</h2>
+							<p style="font-size: 16px;">พัฒนาโดย นายจิราวัฒน์  นางาม<br>
+							ครู โรงเรียนลิ้นฟ้าพิทยาคม จังหวัดศรีสะเกษ<br>
+							แจ้งปัญหา/ข้อเสนอแนะที่ facebook: <a href="https://www.facebook.com/messages/t/nacademyth">N Academy</a></p>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+	<!-- <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script> -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+	<script src="html5-qrcode.min.js"></script>
+	<script>
+		var fromUID = "1FAIpQLSf0zxS7f85g_zH-U6gBg2Cf9L3KnArWWDjBr7ypkjYoEodXRw";
+		var student_data_t = [];
+		var student_history = [];
+		var qrCodeMessage_t;
+		var audioElement;
+		$(document).ready(function(){
+
+			audioElement = document.createElement('audio');
+				audioElement.setAttribute('src', 'beep.mp3');
+				audioElement.setAttribute('autoplay', 'autoplay');
+				$.get();
+				audioElement.addEventListener("load", function() {
+					audioElement.play();
+			}, true);
+
+			$("#time_cell").click(function(){
+				audioElement.play();
+			});
+
+			$("#reader").click(function(){
+				audioElement.play();
+			})
+
+		
+			//audioElement.play();
+
+			function getTimeNow(){
+				var currentdate = new Date(); 
+				return ("0"+currentdate.getHours()).slice(-2) + ":"  
+						+ ("0"+currentdate.getMinutes()).slice(-2) + ":"  
+						+ ("0"+currentdate.getSeconds()).slice(-2);
+			}
+
+			// set timeout
+			setInterval(function(){
+				$("#timenow").text(getTimeNow());
+				$("#result-row").removeClass("bg-danger");
+				$("#result-row").addClass("bg-success");
+				$("#result").text("กำลังสแกน...");
+
+				var req_button = document.querySelector("#reader__scan_region > img");
+				if(req_button !== null){
+					$("#result-row").removeClass("bg-success");
+					$("#result-row").addClass("bg-danger");
+				 	$("#result").text("1. กด Request Camera Permissions จากนั้นกด Start Scanning");
+				 }
+			}, 1000);	
+
+			function onScanSuccess(qrCodeMessage) {
+				audioElement.play();
+				var student = student_data_t.find(a => a[0] === qrCodeMessage);
+				console.log(student);
+				if(typeof(student) === 'undefined'){
+					$("#result-row").removeClass("bg-success");
+					$("#result-row").addClass("bg-danger");
+					$("#result").text("ไม่พบข้อมูล");
+				}
+				if(qrCodeMessage !== qrCodeMessage_t){
+					qrCodeMessage_t = qrCodeMessage;
+					var strUrl = 'https://docs.google.com/forms/d/e/'+fromUID+'/formResponse?usp=pp_url&entry.1471060880='+student[0]+'&entry.1657856697='+encodeURI(student[1])+'&entry.710364960='+student[2]+'&entry.1967022086='+student[3]+'&entry.572957690='+student[4]+'&submit=Submit';
+					$("#result").text(student[1]);
+					$.ajax({
+						type: 'GET',
+						url: strUrl,
+						dataType: 'jsonp',
+						crossDomain: true,
+					})
+					.always(function() {
+						var time_scan = getTimeNow();		
+						if(student_history.length >= 5)
+							student_history.shift();
+						student_history.push([student, time_scan]);
+
+						if(student_history[0] !== undefined){
+							$("#time1").text(student_history[0][1]); $("#name1").text(student_history[0][0][1]);
+						}
+						if(student_history[1] !== undefined){
+							$("#time2").text(student_history[1][1]); $("#name2").text(student_history[1][0][1]);
+						}
+						if(student_history[2] !== undefined){
+							$("#time3").text(student_history[2][1]); $("#name3").text(student_history[2][0][1]);
+						}
+						if(student_history[3] !== undefined){
+							$("#time4").text(student_history[3][1]); $("#name4").text(student_history[3][0][1]);
+						}
+						if(student_history[4] !== undefined){
+							$("#time5").text(student_history[4][1]); $("#name5").text(student_history[4][0][1]);
+						}
+					});
+				}
+			}
+
+			var html5QrcodeScanner = new Html5QrcodeScanner(
+				"reader", { fps: 10, qrbox: 180 }, /* verbose= */ true);
+			html5QrcodeScanner.render(onScanSuccess);
+
+			// load data
+			$.ajax({
+				url:"student20200627.csv",
+				dataType:"text",
+				success:function(data){
+					var student_data = data.split(/\r?\n|\r/);
+					console.log("Data "+(student_data.length-1) + " records has been loaded.");						
+					for(var count = 0; count<student_data.length; count++){
+						var cell_data = student_data[count].split(",");
+						student_data_t.push(cell_data);
+					}
+				}
+			});
+		});
+	</script>
+  </body>
+</html>
